@@ -1,0 +1,15 @@
+{
+  "expo": {
+    "name": "SSS Native",
+    "icon": "./images/Bender.png",
+    "version": "1.0.0",
+    "slug": "sss-native",
+    "sdkVersion": "23.0.0",
+    "ios": {
+      "bundleIdentifier": "net.darkaqua.sssnative"
+    },
+    "android": {
+      "package": "net.darkaqua.sssnative"
+    }
+  }
+}
