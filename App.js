@@ -1,7 +1,8 @@
 import 'expo';
 import React from 'react';
-import { Text, View, Image, TextInput, Keyboard, Animated, KeyboardAvoidingView, Clipboard, StatusBar } from 'react-native';
+import { Text, View, Image, TextInput, Keyboard, Animated, KeyboardAvoidingView, Clipboard, StatusBar, AsyncStorage } from 'react-native';
 import { getPassword, getHash } from 'super-secret-settings';
+import * as base64 from 'base-64';
 
 function getShortHash(text, len = 8) {
     return getHash(text).substring(0, len);
@@ -9,7 +10,10 @@ function getShortHash(text, len = 8) {
 
 export default class App extends React.Component {
 
-    static colors = [1, 2, 3, 4, 5, 6, 7, 8, 9, 'A', 'B', 'C', 'D', 'E', 'F'];
+    static DataStoreStrings = [
+        '@SSSNative:password',
+        '@SSSNative:service'
+    ];
 
     state = {
         backgroundColorIndex: 0,
@@ -27,9 +31,21 @@ export default class App extends React.Component {
         this.onChangeService = this.onChangeService.bind(this);
     }
 
-    componentWillMount() {
+    async componentWillMount() {
         this.keyboardWillShowSub = Keyboard.addListener('keyboardWillShow', this.keyboardWillShow);
         this.keyboardWillHideSub = Keyboard.addListener('keyboardWillHide', this.keyboardWillHide);
+
+        try {
+            const password = await AsyncStorage.getItem(App.DataStoreStrings[0]);
+            const service = await AsyncStorage.getItem(App.DataStoreStrings[1]);
+            console.log(password + "-" + service);
+            this.setState({
+                password: password !== null ? base64.decode(password) : '',
+                service: service !== null ? base64.decode(service) : ''
+            });
+        } catch (error) {
+            console.error(error);
+        }
     }
 
     keyboardWillShow = (event) => {
@@ -46,12 +62,22 @@ export default class App extends React.Component {
         }).start();
     };
 
-    onChangePassword(password){
+    async onChangePassword(password){
         this.setState({ password });
+        try {
+            await AsyncStorage.setItem('@SSSNative:password', base64.encode(password));
+        } catch (error) {
+            console.error(error);
+        }
     }
 
-    onChangeService(service){
+    async onChangeService(service){
         this.setState({ service });
+        try {
+            await AsyncStorage.setItem('@SSSNative:service', base64.encode(service));
+        } catch (error) {
+            console.error(error);
+        }
     }
 
     onSubmit(){
@@ -73,7 +99,7 @@ export default class App extends React.Component {
                     justifyContent: 'center',
                     }}>
                     <Image source={this.state.image} style={{width: 160, height: 160}}/>
-                    <MyText>{getShortHash(this.state.password)}</MyText>
+                    <Text style={{ color: '#fff' }}>{getShortHash(this.state.password)}</Text>
                 </View>
                 <KeyboardAvoidingView behavior='padding' style={{ flex: 1.5, backgroundColor: '#000' }}>
                     <Animated.View style={{ marginBottom: this.paddingInput }}>
@@ -107,13 +133,4 @@ export default class App extends React.Component {
             </View>
         );
     }
-}
-function MyText(props) {
-    return (
-        <Text style={{
-            color: '#fff'
-        }}>
-            {props.children}
-        </Text>
-    );
 }

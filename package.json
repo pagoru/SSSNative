@@ -1,6 +1,6 @@
 {
   "name": "SSSNative",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "private": true,
   "devDependencies": {
     "jest-expo": "23.0.0",
@@ -21,6 +21,7 @@
     "preset": "jest-expo"
   },
   "dependencies": {
+    "base-64": "^0.1.0",
     "expo": "^23.0.4",
     "exponent": "^14.0.0",
     "react": "^16.2.0",
