@@ -4866,6 +4866,10 @@ react-native-cli@^2.0.1:
     prompt "^0.2.14"
     semver "^5.0.3"
 
+react-native-fingerprint-identify@^1.0.5:
+  version "1.0.5"
+  resolved "https://registry.yarnpkg.com/react-native-fingerprint-identify/-/react-native-fingerprint-identify-1.0.5.tgz#5a438c4d2f8c0e34da413615c0f6414d221f19fc"
+
 react-native-gesture-handler@1.0.0-alpha.30:
   version "1.0.0-alpha.30"
   resolved "https://registry.yarnpkg.com/react-native-gesture-handler/-/react-native-gesture-handler-1.0.0-alpha.30.tgz#7f79c2da5a59cc8ce20cf04c11360409a53bef59"
