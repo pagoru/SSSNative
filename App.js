@@ -1,18 +1,21 @@
-import Expo, { Permissions } from 'expo';
+import Expo from 'expo';
 import React from 'react';
 import {
     Text,
     View,
     Image,
     TextInput,
-    Keyboard,
+    AppState,
     Animated,
     KeyboardAvoidingView,
     Clipboard,
     StatusBar,
     AsyncStorage
 } from 'react-native';
-import { getPassword, getHash } from 'super-secret-settings';
+import {
+    getPassword,
+    getHash
+} from 'super-secret-settings';
 import * as base64 from 'base-64';
 
 export default class App extends React.Component {
@@ -24,6 +27,7 @@ export default class App extends React.Component {
 
     state = {
         success: false,
+        appState: AppState.currentState,
         backgroundColorIndex: 0,
         backgroundColor: '#000',
         password: '',
@@ -37,19 +41,17 @@ export default class App extends React.Component {
 
         this.onChangePassword = this.onChangePassword.bind(this);
         this.onChangeService = this.onChangeService.bind(this);
+        this.onChange = this.onChange.bind(this);
     }
 
     componentDidMount(){
+        AppState.addEventListener('change', this.onChange);
+
         this.scanFingerPrint();
     }
 
-    async scanFingerPrint() {
-        const { success } = await Expo.Fingerprint.authenticateAsync();
-        if(success) {
-            this.setState({ success });
-        } else {
-            setTimeout(_ => this.scanFingerPrint(), 1000);
-        }
+    componentWillUnmount() {
+        AppState.removeEventListener('change', this.onChange);
     }
 
     async componentWillMount() {
@@ -65,6 +67,31 @@ export default class App extends React.Component {
         }
     }
 
+    onChange(nextAppState) {
+        if (this.state.appState.match(/inactive|background/) && nextAppState === 'active') {
+            this.setState({success: false});
+            this.scanFingerPrint();
+        }
+        this.setState({appState: nextAppState});
+    }
+
+    async scanFingerPrint() {
+        const fingerprint = await Expo.Fingerprint.authenticateAsync();
+        const { success, error } = fingerprint;
+        let time = 1000;
+        if(error !== null && error !== undefined){
+            if(error === 'lockout')
+                time = 5000;
+        } else {
+            if(success) {
+                this.setState({ success });
+                time = -1;
+            }
+        }
+        if(time > 0)
+            setTimeout(_ => this.scanFingerPrint(), time);
+    }
+
     getShortHash() {
         return getHash(this.state.password).substring(0, 6);
     }
@@ -78,7 +105,7 @@ export default class App extends React.Component {
     async onChangePassword(password){
         this.setState({ password });
         try {
-            await AsyncStorage.setItem('@SSSNative:password', base64.encode(password));
+            await AsyncStorage.setItem(App.DataStoreStrings[0], base64.encode(password));
         } catch (error) {
             console.error(error);
         }
@@ -87,7 +114,7 @@ export default class App extends React.Component {
     async onChangeService(service){
         this.setState({ service });
         try {
-            await AsyncStorage.setItem('@SSSNative:service', base64.encode(service));
+            await AsyncStorage.setItem(App.DataStoreStrings[1], base64.encode(service));
         } catch (error) {
             console.error(error);
         }
