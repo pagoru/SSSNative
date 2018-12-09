@@ -1,5 +1,5 @@
-import Expo from 'expo';
-import React from 'react';
+import * as Expo from 'expo';
+import * as React from 'react';
 import {
     Text,
     View,
@@ -9,13 +9,13 @@ import {
     Animated,
     KeyboardAvoidingView,
     Clipboard,
-    StatusBar,
     AsyncStorage
 } from 'react-native';
 import {
     getPassword,
     getHash
 } from 'super-secret-settings';
+
 import * as base64 from 'base-64';
 
 export default class App extends React.Component {
@@ -25,6 +25,24 @@ export default class App extends React.Component {
         '@SSSNative:service'
     ];
 
+    // static navigationOptions = () => ({
+    //     title: 'SSSNative',
+    //     headerTintColor: 'white',
+    //     headerStyle: {
+    //         backgroundColor: 'white'
+    //     }
+    // });
+
+    static navigationOptions = {
+        title: 'Pronóstico Actual',
+        header: navigation => ({
+            titleStyle: {
+                color: '#FFFFFF'
+            },
+            tintColor: '#0087B7'
+        })
+    }
+
     state = {
         success: false,
         appState: AppState.currentState,
@@ -32,7 +50,7 @@ export default class App extends React.Component {
         backgroundColor: '#000',
         password: '',
         service: '',
-        image: { uri: 'https://avatars3.githubusercontent.com/u/12001866?s=480' }
+        image: { uri: `https://avatars3.githubusercontent.com/u/12001866?s=480&t=${Date.now()}` }
     };
 
     constructor(props) {
@@ -76,7 +94,7 @@ export default class App extends React.Component {
     }
 
     async scanFingerPrint() {
-        const fingerprint = await Expo.Fingerprint.authenticateAsync();
+        const fingerprint = await Expo.LocalAuthentication.authenticateAsync();
         const { success, error } = fingerprint;
         let time = 1000;
         if(error !== null && error !== undefined){
@@ -131,47 +149,46 @@ export default class App extends React.Component {
     render() {
 
         const inputs = <KeyboardAvoidingView behavior='padding' style={{
-                flex: 0,
-                backgroundColor: '#000'
-            }}>
-                <Animated.View style={{ marginBottom: this.paddingInput }}>
-                    <TextInput
-                        secureTextEntry={true}
-                        placeholder='password'
-                        style={{
-                            color: '#fff',
-                            height: 40,
-                            marginHorizontal: 8
-                        }}
-                        underlineColorAndroid='transparent'
-                        onChangeText={this.onChangePassword}
-                        value={this.state.password}
-                        onEndEditing={_ => this.onSubmit()}
-                    />
-                    <TextInput
-                        placeholder='service'
-                        style={{
-                            color: '#fff',
-                            height: 40,
-                            marginHorizontal: 8
-                        }}
-                        underlineColorAndroid='transparent'
-                        onChangeText={this.onChangeService}
-                        value={this.state.service}
-                        onEndEditing={_ => this.onSubmit()}
-                    />
-                </Animated.View>
-            </KeyboardAvoidingView>;
+            flex: 0,
+            backgroundColor: '#000'
+        }}>
+            <Animated.View style={{ marginBottom: this.paddingInput }}>
+                <TextInput
+                    secureTextEntry={true}
+                    placeholder='password'
+                    style={{
+                        color: '#fff',
+                        height: 40,
+                        marginHorizontal: 8
+                    }}
+                    underlineColorAndroid='transparent'
+                    onChangeText={this.onChangePassword}
+                    value={this.state.password}
+                    onEndEditing={_ => this.onSubmit()}
+                />
+                <TextInput
+                    placeholder='service'
+                    style={{
+                        color: '#fff',
+                        height: 40,
+                        marginHorizontal: 8
+                    }}
+                    underlineColorAndroid='transparent'
+                    onChangeText={this.onChangeService}
+                    value={this.state.service}
+                    onEndEditing={_ => this.onSubmit()}
+                />
+            </Animated.View>
+        </KeyboardAvoidingView>;
 
         return (
             <View style={{flex: 1}}>
-                <StatusBar hidden={true}/>
                 <View style={{
                     flex: 6,
                     backgroundColor: `#${this.getShortHash()}`,
                     alignItems: 'center',
                     justifyContent: 'center',
-                    }}>
+                }}>
                     <Image source={this.state.image} style={{width: 160, height: 160}}/>
                     <Text style={{ color: '#fff' }}>{this.getShortHashText()}</Text>
                 </View>

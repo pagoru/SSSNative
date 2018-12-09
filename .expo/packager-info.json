@@ -1,8 +1,9 @@
 {
-  "expoServerPort": 19007,
-  "packagerPort": 19006,
-  "packagerPid": 15821,
-  "expoServerNgrokUrl": "https://ng-hrh.pagoru.sssnative.exp.direct",
-  "packagerNgrokUrl": "https://packager.ng-hrh.pagoru.sssnative.exp.direct",
-  "ngrokPid": 15841
+  "devToolsPort": 19002,
+  "expoServerPort": 19000,
+  "packagerPort": null,
+  "packagerPid": null,
+  "expoServerNgrokUrl": null,
+  "packagerNgrokUrl": null,
+  "ngrokPid": null
 }

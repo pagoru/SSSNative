@@ -1,33 +1,21 @@
 {
-  "name": "SSSNative",
-  "version": "1.2.1",
-  "private": true,
-  "devDependencies": {
-    "jest-expo": "23.0.0",
-    "react-native-scripts": "1.8.1",
-    "react-test-renderer": "16.0.0"
-  },
-  "main": "./node_modules/react-native-scripts/build/bin/crna-entry.js",
+  "version": "1.0.2",
+  "main": "node_modules/expo/AppEntry.js",
   "scripts": {
-    "4968": "sh 4968.sh",
-    "start": "react-native-scripts start",
-    "eject": "react-native-scripts eject",
-    "build-android": "react-native-scripts android --release",
-    "android": "react-native-scripts android",
-    "ios": "react-native-scripts ios",
-    "test": "node node_modules/jest/bin/jest.js --watch"
-  },
-  "jest": {
-    "preset": "jest-expo"
+    "start": "expo start",
+    "android": "expo start --android",
+    "ios": "expo start --ios",
+    "eject": "expo eject"
   },
   "dependencies": {
     "base-64": "^0.1.0",
-    "expo": "^23.0.4",
-    "exponent": "^14.0.0",
-    "react": "^16.2.0",
-    "react-native": "0.50.3",
-    "react-native-cli": "^2.0.1",
-    "react-native-fingerprint-identify": "^1.0.5",
-    "super-secret-settings": "^2.1.0"
-  }
+    "expo": "^31.0.2",
+    "react": "16.5.0",
+    "react-native": "https://github.com/expo/react-native/archive/sdk-31.0.0.tar.gz",
+    "super-secret-settings": "^3.0.2"
+  },
+  "devDependencies": {
+    "babel-preset-expo": "^5.0.0"
+  },
+  "private": true
 }
